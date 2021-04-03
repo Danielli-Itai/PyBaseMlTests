@@ -403,10 +403,10 @@ def TestImageClassification5L(train_x, train_y, test_x, test_y, classes, num_px,
     GraphPlot.CostsPlot(np.squeeze(costs), learning_rate=0.0075, name="Two layers Costs",  out_dir=OUT_DIR)
 
     pred_train = NeuralNetLx.predict(train_x, train_y, parameters)
-    print('Accuracy 5L train ' + NeuralNetLx.Accuracy(train_x, train_y, pred_train))
+    print('Accuracy 5L train ' + str(NeuralNetLx.Accuracy(train_x, train_y, pred_train)))
 
     pred_test = NeuralNetLx.predict(test_x, test_y, parameters)
-    print('Accuracy 5L test ' + NeuralNetLx.Accuracy(test_x, test_y, pred_test))
+    print('Accuracy 5L test ' + str(NeuralNetLx.Accuracy(test_x, test_y, pred_test)))
 
     GraphPlot.print_mislabeled_images(classes, test_x, test_y, pred_test)
 
