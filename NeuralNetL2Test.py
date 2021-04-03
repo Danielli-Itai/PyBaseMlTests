@@ -18,7 +18,8 @@ import matplotlib.pyplot as plt
 
 from PyBase import Test
 from PyBase import Files
-from PyBaseMl import NeuralNetl2
+from PyBaseMl import NeuralNetL2
+from PyBaseMl import GraphPlot
 
 
 
@@ -29,7 +30,7 @@ from PyBaseMl import NeuralNetl2
 #               Constants                           #
 #                                                   #
 #####################################################
-TEST_NAME='NeuralNetTest'
+TEST_NAME='NeuralNetL2Test'
 OUT_DIR = Test.OutDir(TEST_NAME)
 
 
@@ -49,7 +50,7 @@ def layer_sizes_test_case():
 
 def testLayerSizes():
     X_assess, Y_assess = layer_sizes_test_case()
-    (n_x, n_h, n_y) = NeuralNetl2.layer_sizes(X_assess, Y_assess)
+    (n_x, n_h, n_y) = NeuralNetL2.layer_sizes(X_assess, Y_assess)
     print("The size of the input layer is: n_x = " + str(n_x))
     print("The size of the hidden layer is: n_h = " + str(n_h))
     print("The size of the output layer is: n_y = " + str(n_y))
@@ -70,7 +71,7 @@ def initialize_parameters_test_case():
 
 def testInitializeParameters():
     n_x, n_h, n_y = initialize_parameters_test_case()
-    parameters = NeuralNetl2.initialize_parameters(n_x, n_h, n_y)
+    parameters = NeuralNetL2.initialize_parameters(n_x, n_h, n_y)
     print("W1 = " + str(parameters["W1"]))
     print("b1 = " + str(parameters["b1"]))
     print("W2 = " + str(parameters["W2"]))
@@ -102,7 +103,7 @@ def forward_propagation_test_case():
 
 def testForwaredPropagate():
     X_assess, parameters = forward_propagation_test_case()
-    A2, cache = NeuralNetl2.forward_propagation(X_assess, parameters)
+    A2, cache = NeuralNetL2.forward_propagation(X_assess, parameters)
 
     # Note: we use the mean here just to make sure that your output matches ours.
     print(np.mean(cache['Z1']) ,np.mean(cache['A1']),np.mean(cache['Z2']),np.mean(cache['A2']))
@@ -132,7 +133,7 @@ def compute_cost_test_case():
 
 def testCost():
     A2, Y_assess, parameters = compute_cost_test_case()
-    print("cost = " + str(NeuralNetl2.compute_cost(A2, Y_assess, parameters)))
+    print("cost = " + str(NeuralNetL2.compute_cost(A2, Y_assess, parameters)))
     return
 
 
@@ -165,7 +166,7 @@ def backward_propagation_test_case():
 
 def testBackPropagate():
     parameters, cache, X_assess, Y_assess = backward_propagation_test_case()
-    grads = NeuralNetl2.backward_propagation(parameters, cache, X_assess, Y_assess)
+    grads = NeuralNetL2.backward_propagation(parameters, cache, X_assess, Y_assess)
     print ("dW1 = "+ str(grads["dW1"]))
     print ("db1 = "+ str(grads["db1"]))
     print ("dW2 = "+ str(grads["dW2"]))
@@ -197,7 +198,7 @@ def update_parameters_test_case():
 
 def testUpdateParamaters():
     parameters, grads = update_parameters_test_case()
-    parameters = NeuralNetl2.update_parameters(parameters, grads)
+    parameters = NeuralNetL2.update_parameters(parameters, grads)
     print("W1 = " + str(parameters["W1"]))
     print("b1 = " + str(parameters["b1"]))
     print("W2 = " + str(parameters["W2"]))
@@ -220,7 +221,7 @@ def nn_model_test_case():
 
 def testNnModel():
     X_assess, Y_assess = nn_model_test_case()
-    parameters = NeuralNetl2.nn_model(X_assess, Y_assess, 4, num_iterations=10000, print_cost=True)
+    parameters = NeuralNetL2.nn_model(X_assess, Y_assess, 4, num_iterations=10000, print_cost=True)
     print("W1 = " + str(parameters["W1"]))
     print("b1 = " + str(parameters["b1"]))
     print("W2 = " + str(parameters["W2"]))
@@ -249,7 +250,7 @@ def predict_test_case():
 
 def testPredict():
     parameters, X_assess = predict_test_case()
-    predictions = NeuralNetl2.predict(parameters, X_assess)
+    predictions = NeuralNetL2.predict(parameters, X_assess)
     print("predictions mean = " + str(np.mean(predictions)))
     return
 
@@ -322,7 +323,7 @@ def LogRegression(X, Y):
     clf.fit(X.T, Y.T.ravel())
 
     # Plot the decision boundary for logistic regression
-    NeuralNetl2.plot_decision_boundary(lambda x: clf.predict(x), X, Y, OUT_DIR, "Logistic Regression")
+    GraphPlot.plot_decision_boundary(lambda x: clf.predict(x), X, Y, OUT_DIR, "Logistic Regression")
 
     # Print accuracy
     LR_predictions = clf.predict(X.T)
@@ -340,13 +341,13 @@ def LogRegression(X, Y):
 #####################################################
 def NeuralNetwork(X,Y):
     # Build a model with a n_h-dimensional hidden layer
-    parameters = NeuralNetl2.nn_model(X, Y, n_h = 4, num_iterations = 10000, print_cost=True)
+    parameters = NeuralNetL2.nn_model(X, Y, n_h = 4, num_iterations = 10000, print_cost=True)
 
     # Plot the decision boundary
-    NeuralNetl2.plot_decision_boundary(lambda x: NeuralNetl2.predict(parameters, x.T), X, Y, OUT_DIR, "Decision Boundary for hidden layer size " + str(4))
+    GraphPlot.plot_decision_boundary(lambda x: NeuralNetL2.predict(parameters, x.T), X, Y, OUT_DIR, "Decision Boundary for hidden layer size " + str(4))
 
     # Print accuracy
-    predictions = NeuralNetl2.predict(parameters, X)
+    predictions = NeuralNetL2.predict(parameters, X)
     print ('Accuracy: %d' % BaseMl.Accuracy(Y,predictions.T) + '%')
 
 
@@ -362,13 +363,13 @@ def NeuralNetwork(X,Y):
 #####################################################
 hidden_layer_sizes = [1, 2, 3, 4, 5, 20, 50]
 def NeuralNetworkHlayers(X,Y, hidden_layer_sizes):
-    plt.figure(figsize=(16, 32))
+    #plt.figure(figsize=(16, 32))
     for i, n_h in enumerate(hidden_layer_sizes):
-        plt.subplot(5, 2, i+1)
-        plt.title('Hidden Layer of size %d' % n_h)
-        parameters = NeuralNetl2.nn_model(X, Y, n_h, num_iterations = 5000)
-        NeuralNetl2.plot_decision_boundary(lambda x: NeuralNetl2.predict(parameters, x.T), X, Y, OUT_DIR, "Decision Boundary for hidden layers " + str(n_h))
-        predictions = NeuralNetl2.predict(parameters, X)
+        #plt.subplot(5, 2, i+1)
+        #plt.title('Hidden Layer of size %d' % n_h)
+        parameters = NeuralNetL2.nn_model(X, Y, n_h, num_iterations = 5000)
+        GraphPlot.plot_decision_boundary(lambda x: NeuralNetL2.predict(parameters, x.T), X, Y, OUT_DIR, "Decision Boundary for hidden layers " + str(n_h))
+        predictions = NeuralNetL2.predict(parameters, X)
         accuracy = BaseMl.Accuracy(Y, predictions.T)
         print ("Accuracy for {} hidden units: {} %".format(n_h, accuracy))
     return
@@ -416,14 +417,14 @@ def RunAllNets(dataset = None):
         if dataset == "blobs":
             Y = Y % 2
     # Visualize the data
-    NeuralNetl2.plot_dataset(X_0 =X[0, :], X_1=X[1, :], Y=Y[0, :], scatter =40, title=dataset)
+    GraphPlot.plot_dataset(X_h =X[0, :], X_v=X[1, :], Y_c=Y[0, :], scatter =40, path=OUT_DIR, title=dataset)
 
     LogRegression(X, Y)
 
     NeuralNetwork(X, Y)
 
     NeuralNetworkHlayers(X, Y, hidden_layer_sizes)
-
+    return
 
 
 

@@ -5,20 +5,24 @@
 import os
 import sys
 import numpy as np
-import matplotlib.pyplot as plt
 import h5py
 from PIL import Image
 
 from PyBase import Test
 from PyBase import Files
 from PyBaseMl import BaseMl
+from PyBaseMl import GraphPlot
 from PyBaseMl import LogReg
 
 
 
 
 
-#Constants.
+#####################################################
+#                                                   #
+#                   Constants.                      #
+#                                                   #
+#####################################################
 TEST_NAME = 'LogRegTest'
 DATA_DIR = Test.DataDir(TEST_NAME)
 OUT_DIR = Test.OutDir(TEST_NAME)
@@ -80,14 +84,6 @@ def SimpleTest():
 #   Logistic Regression image classification.       #
 #                                                   #
 #####################################################
-# Show an image and save it in the plot directory.
-def ImageShow(image, name):
-    plt.imshow(image)
-    plt.savefig(os.path.join(OUT_DIR, name))
-    plt.close()
-    return
-
-
 
 # Loading the data (cat/non-cat)
 def DatasetLoad():
@@ -195,7 +191,7 @@ def LogRegModel():
 
     # Example of a picture visualization:
     pic_index = 30
-    ImageShow(train_set_x_orig[pic_index],'example-pic.jpg')
+    GraphPlot.ImageShow(train_set_x_orig[pic_index], os.path.join(OUT_DIR, 'example-pic.jpg'))
     print("Train picture:" + str(pic_index) + " is a " + GetClass(classes,train_set_y,pic_index))
 
     # Preparing the images data for logistic regression.
@@ -209,22 +205,23 @@ def LogRegModel():
     params = LogReg.ParamsRead(os.path.join(OUT_DIR,"LogRegModelParams"))
     ParamsCompare(params, model[LogReg.MODEL_PARAMS])
 
-    LogReg.CostsPlot(np.squeeze(model['costs']), model["learning_rate"], 'costs.jpg', OUT_DIR)
+    GraphPlot.CostsPlot(np.squeeze(model['costs']), model["learning_rate"], 'costs.jpg', OUT_DIR)
 
     # Example of a picture that is wrongly classified.
-    ImageShow(test_set_x[:, 1].reshape((num_py, num_px, num_pc)), "not-cat-eror.jpg")
+    GraphPlot.ImageShow(test_set_x[:, 1].reshape((num_py, num_px, num_pc)), os.path.join(OUT_DIR, "not-cat-eror.jpg"))
     print("Test picture "+str(pic_index)+": is a \"" + GetClass(classes,test_set_y, pic_index) + "\", you predicted that it is a \"" + GetClass(classes,model["Y_prediction_test"],pic_index)+"\"")
 
     # Example of your picture prediction.
     image, prediction, predic_class = ImagePredict(classes, os.path.join(DATA_DIR,"images/my_cat.jpg"), num_py, num_px, num_pc, model)
     print("my_cat.jpg y=" + str(np.squeeze(prediction)) + ", your algorithm predicts a \"" + predic_class + "\" picture.")
-    ImageShow(image,'my_cat.jpg')
+    GraphPlot.ImageShow(image, os.path.join(OUT_DIR, 'my_cat.jpg'))
 
     # Example of your picture prediction.
     image, prediction, predic_class = ImagePredict(classes, os.path.join(DATA_DIR,"images/my_none_cat.jpg"), num_py, num_px, num_pc, model)
     print("my_none_cat.jpg y=" + str(np.squeeze(prediction)) + ", your algorithm predicts a \"" + predic_class + "\" picture.")
-    ImageShow(image,'my_none_cat.jpg')
+    GraphPlot.ImageShow(image, os.path.join(OUT_DIR, 'my_none_cat.jpg'))
     return
+
 
 
 
@@ -245,7 +242,7 @@ def LogRegLearningRates():
     # Example of multiple learning rates.
     learning_rates = [0.01, 0.005, 0.001, 0.0005, 0.0001]
     models = LogReg.LearningRates(train_set_x, train_set_y, test_set_x, test_set_y, learning_rates, PREDICT_PROB)
-    LogReg.LearningRatesCostsPlot(models, learning_rates, 'learning rates', OUT_DIR)
+    GraphPlot.LearningRatesCostsPlot(models, learning_rates, 'learning rates', OUT_DIR)
 
     return
 
